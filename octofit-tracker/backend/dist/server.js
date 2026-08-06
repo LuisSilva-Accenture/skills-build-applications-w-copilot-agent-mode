@@ -7,15 +7,13 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 require("./config/database.js");
 const api_js_1 = __importDefault(require("./routes/api.js"));
+const baseUrl_js_1 = require("./config/baseUrl.js");
 const app = (0, express_1.default)();
 const port = process.env.PORT || 8000;
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.get('/api/health', (_req, res) => {
-    const codespaceName = process.env.CODESPACE_NAME;
-    const baseUrl = codespaceName
-        ? `https://${codespaceName}-8000.app.github.dev`
-        : `http://localhost:${port}`;
+    const baseUrl = (0, baseUrl_js_1.getApiBaseUrl)(port);
     res.json({
         status: 'ok',
         message: 'OctoFit Tracker API is running',

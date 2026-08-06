@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import './config/database.js';
 import apiRoutes from './routes/api.js';
+import { getApiBaseUrl } from './config/baseUrl.js';
 
 const app = express();
 const port = process.env.PORT || 8000;
@@ -10,10 +11,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/api/health', (_req, res) => {
-  const codespaceName = process.env.CODESPACE_NAME;
-  const baseUrl = codespaceName
-    ? `https://${codespaceName}-8000.app.github.dev`
-    : `http://localhost:${port}`;
+  const baseUrl = getApiBaseUrl(port);
 
   res.json({
     status: 'ok',

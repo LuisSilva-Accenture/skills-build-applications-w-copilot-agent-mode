@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { Router } from 'express';
 import { Activity, LeaderboardEntry, Team, User, Workout } from '../models/index.js';
+import { getApiBaseUrl } from '../config/baseUrl.js';
 
 const router = Router();
 
@@ -39,17 +40,14 @@ function getFallbackWorkouts() {
   ];
 }
 
-function getBaseUrl(req: any) {
-  const codespaceName = process.env.CODESPACE_NAME;
-  return codespaceName
-    ? `https://${codespaceName}-8000.app.github.dev`
-    : `http://localhost:${process.env.PORT || 8000}`;
+function getBaseUrl() {
+  return getApiBaseUrl();
 }
 
 router.get(['/users', '/users/'], async (_req, res) => {
   try {
     const users = isDatabaseReady() ? await User.find({}) : getFallbackUsers();
-    res.json({ success: true, data: users, baseUrl: getBaseUrl(_req) });
+    res.json({ success: true, data: users, baseUrl: getBaseUrl() });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Unable to fetch users', error });
   }
@@ -58,7 +56,7 @@ router.get(['/users', '/users/'], async (_req, res) => {
 router.post(['/users', '/users/'], async (req, res) => {
   try {
     const user = isDatabaseReady() ? await User.create(req.body) : { ...req.body, id: `user-${Date.now()}` };
-    res.status(201).json({ success: true, data: user, baseUrl: getBaseUrl(req) });
+    res.status(201).json({ success: true, data: user, baseUrl: getBaseUrl() });
   } catch (error) {
     res.status(400).json({ success: false, message: 'Unable to create user', error });
   }
@@ -67,7 +65,7 @@ router.post(['/users', '/users/'], async (req, res) => {
 router.get(['/teams', '/teams/'], async (_req, res) => {
   try {
     const teams = isDatabaseReady() ? await Team.find({}) : getFallbackTeams();
-    res.json({ success: true, data: teams, baseUrl: getBaseUrl(_req) });
+    res.json({ success: true, data: teams, baseUrl: getBaseUrl() });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Unable to fetch teams', error });
   }
@@ -76,7 +74,7 @@ router.get(['/teams', '/teams/'], async (_req, res) => {
 router.post(['/teams', '/teams/'], async (req, res) => {
   try {
     const team = isDatabaseReady() ? await Team.create(req.body) : { ...req.body, id: `team-${Date.now()}` };
-    res.status(201).json({ success: true, data: team, baseUrl: getBaseUrl(req) });
+    res.status(201).json({ success: true, data: team, baseUrl: getBaseUrl() });
   } catch (error) {
     res.status(400).json({ success: false, message: 'Unable to create team', error });
   }
@@ -85,7 +83,7 @@ router.post(['/teams', '/teams/'], async (req, res) => {
 router.get(['/activities', '/activities/'], async (_req, res) => {
   try {
     const activities = isDatabaseReady() ? await Activity.find({}) : getFallbackActivities();
-    res.json({ success: true, data: activities, baseUrl: getBaseUrl(_req) });
+    res.json({ success: true, data: activities, baseUrl: getBaseUrl() });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Unable to fetch activities', error });
   }
@@ -94,7 +92,7 @@ router.get(['/activities', '/activities/'], async (_req, res) => {
 router.post(['/activities', '/activities/'], async (req, res) => {
   try {
     const activity = isDatabaseReady() ? await Activity.create(req.body) : { ...req.body, id: `activity-${Date.now()}` };
-    res.status(201).json({ success: true, data: activity, baseUrl: getBaseUrl(req) });
+    res.status(201).json({ success: true, data: activity, baseUrl: getBaseUrl() });
   } catch (error) {
     res.status(400).json({ success: false, message: 'Unable to create activity', error });
   }
@@ -103,7 +101,7 @@ router.post(['/activities', '/activities/'], async (req, res) => {
 router.get(['/leaderboard', '/leaderboard/'], async (_req, res) => {
   try {
     const leaderboard = isDatabaseReady() ? await LeaderboardEntry.find({}).sort({ score: -1 }) : getFallbackLeaderboard();
-    res.json({ success: true, data: leaderboard, baseUrl: getBaseUrl(_req) });
+    res.json({ success: true, data: leaderboard, baseUrl: getBaseUrl() });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Unable to fetch leaderboard', error });
   }
@@ -112,7 +110,7 @@ router.get(['/leaderboard', '/leaderboard/'], async (_req, res) => {
 router.post(['/leaderboard', '/leaderboard/'], async (req, res) => {
   try {
     const entry = isDatabaseReady() ? await LeaderboardEntry.create(req.body) : { ...req.body, id: `leaderboard-${Date.now()}` };
-    res.status(201).json({ success: true, data: entry, baseUrl: getBaseUrl(req) });
+    res.status(201).json({ success: true, data: entry, baseUrl: getBaseUrl() });
   } catch (error) {
     res.status(400).json({ success: false, message: 'Unable to create leaderboard entry', error });
   }
@@ -121,7 +119,7 @@ router.post(['/leaderboard', '/leaderboard/'], async (req, res) => {
 router.get(['/workouts', '/workouts/'], async (_req, res) => {
   try {
     const workouts = isDatabaseReady() ? await Workout.find({}) : getFallbackWorkouts();
-    res.json({ success: true, data: workouts, baseUrl: getBaseUrl(_req) });
+    res.json({ success: true, data: workouts, baseUrl: getBaseUrl() });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Unable to fetch workouts', error });
   }
@@ -130,7 +128,7 @@ router.get(['/workouts', '/workouts/'], async (_req, res) => {
 router.post(['/workouts', '/workouts/'], async (req, res) => {
   try {
     const workout = isDatabaseReady() ? await Workout.create(req.body) : { ...req.body, id: `workout-${Date.now()}` };
-    res.status(201).json({ success: true, data: workout, baseUrl: getBaseUrl(req) });
+    res.status(201).json({ success: true, data: workout, baseUrl: getBaseUrl() });
   } catch (error) {
     res.status(400).json({ success: false, message: 'Unable to create workout', error });
   }
