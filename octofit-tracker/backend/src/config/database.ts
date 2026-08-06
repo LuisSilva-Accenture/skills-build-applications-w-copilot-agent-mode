@@ -9,7 +9,7 @@ mongoose
   })
   .catch((error) => {
     console.error('Error connecting to octofit_db:', error);
-    process.exit(1);
+    console.warn('Continuing without a MongoDB connection for local API development.');
   });
 
 export default mongoose.connection;
